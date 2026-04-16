@@ -60,7 +60,6 @@
 
         .sidebar {
             width: 280px;
-            min-width: 280px;
             background: var(--bg-main);
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -274,12 +273,10 @@
             display: flex;
             flex-direction: column;
             transition: background 0.3s;
-            min-width: 0;
         }
 
         .memory-sidebar {
             width: 350px;
-            min-width: 350px;
             background: var(--bg-main);
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
@@ -525,12 +522,10 @@
         .setting-row {
             display: flex;
             gap: 20px;
-            flex-wrap: wrap;
         }
 
         .setting-row .setting-group {
             flex: 1;
-            min-width: 200px;
         }
 
         .setting-group label {
@@ -801,8 +796,6 @@
             border-radius: 20px;
             max-width: 400px;
             width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
         }
 
         .modal-content h3 {
@@ -875,152 +868,6 @@
             color: var(--text-secondary);
             font-size: 13px;
         }
-
-        /* MOBILE RESPONSIVE STYLES */
-        @media (max-width: 1100px) {
-            .memory-sidebar {
-                display: none;
-            }
-        }
-
-        @media (max-width: 800px) {
-            body {
-                padding: 10px;
-            }
-
-            .app-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .sidebar {
-                width: 100%;
-                min-width: unset;
-                max-height: 50vh;
-                order: 2;
-            }
-
-            .main-container {
-                width: 100%;
-                min-height: 70vh;
-                order: 1;
-            }
-
-            .memory-sidebar {
-                display: none;
-            }
-
-            .header {
-                padding: 20px;
-            }
-
-            .header h1 {
-                font-size: 22px;
-            }
-
-            .settings {
-                padding: 15px;
-            }
-
-            .setting-row {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .setting-row .setting-group {
-                min-width: unset;
-            }
-
-            .message-bubble {
-                max-width: 85%;
-            }
-
-            .input-row {
-                flex-wrap: wrap;
-            }
-
-            .input-area textarea {
-                width: 100%;
-                min-width: unset;
-            }
-
-            .input-area button {
-                padding: 12px 20px;
-            }
-
-            .attach-btn {
-                padding: 12px 15px !important;
-            }
-        }
-
-        /* Mobile menu button for memories */
-        .mobile-memory-btn {
-            display: none;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-            z-index: 100;
-        }
-
-        @media (max-width: 1100px) {
-            .mobile-memory-btn {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-        }
-
-        .memory-modal {
-            display: none;
-            position: fixed;
-            z-index: 1001;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-        }
-
-        .memory-modal.show {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .memory-modal-content {
-            background: var(--bg-main);
-            width: 90%;
-            max-width: 400px;
-            max-height: 80vh;
-            border-radius: 20px;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .memory-modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .memory-modal-close {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
@@ -1060,17 +907,17 @@
                 <div class="setting-group">
                     <label>OpenRouter API Key:</label>
                     <input type="password" id="apiKey" placeholder="Paste your API key here" onchange="saveSettings()">
-                    <div class="saved-indicator" id="apiKeySaved" style="display:none;">✓ Saved to cloud</div>
+                    <div class="saved-indicator" id="apiKeySaved" style="display:none;">✓ Saved</div>
                 </div>
 
                 <div class="setting-row">
                     <div class="setting-group">
                         <label>AI Model:</label>
                         <select id="modelSelect" onchange="saveSettings()">
-                            <option value="anthropic/claude-sonnet-4">Claude Sonnet 4</option>
-                            <option value="openai/gpt-4.1">GPT 4.1</option>
-                            <option value="anthropic/claude-opus-4">Claude Opus 4</option>
-                            <option value="qwen/qwen3-235b-a22b">Qwen 3 235B</option>
+                            <option value="openai/gpt-5.1">GPT 5.1</option>
+                            <option value="anthropic/claude-sonnet-4.5">Claude Sonnet 4.5</option>
+                            <option value="anthropic/claude-opus-4.5">Claude Opus 4.5</option>
+                            <option value="qwen/qwen3.5-35b-a3b">Qwen 3.5 35B</option>
                         </select>
                     </div>
 
@@ -1085,7 +932,7 @@
                     <div class="setting-group">
                         <label>Brave Search API Key (Optional):</label>
                         <input type="password" id="searchApiKey" placeholder="Get free key at brave.com/search/api" onchange="saveSettings()">
-                        <div class="saved-indicator" id="searchKeySaved" style="display:none;">✓ Saved to cloud</div>
+                        <div class="saved-indicator" id="searchKeySaved" style="display:none;">✓ Saved</div>
                     </div>
 
                     <div class="setting-group toggle-setting">
@@ -1143,27 +990,6 @@
 
             <button class="add-memory-btn" onclick="addNewMemory()">➕ Add Memory</button>
             <div class="memories-list" id="memoriesList"></div>
-        </div>
-    </div>
-
-    <!-- Mobile Memory Button -->
-    <button class="mobile-memory-btn" onclick="openMemoryModal()">🧠</button>
-
-    <!-- Memory Modal for Mobile -->
-    <div class="memory-modal" id="memoryModal">
-        <div class="memory-modal-content">
-            <div class="memory-modal-header">
-                <h2>🧠 Memories</h2>
-                <button class="memory-modal-close" onclick="closeMemoryModal()">Close</button>
-            </div>
-            <div class="memory-toggle" style="margin-bottom: 15px;">
-                <span>Memories Active:</span>
-                <div class="toggle-switch active" id="memoryToggleMobile" onclick="toggleMemory()">
-                    <div class="toggle-slider"></div>
-                </div>
-            </div>
-            <button class="add-memory-btn" onclick="addNewMemory()" style="width: 100%;">➕ Add Memory</button>
-            <div class="memories-list" id="memoriesListMobile"></div>
         </div>
     </div>
 
@@ -1239,86 +1065,11 @@
 
         // Model pricing (per 1M tokens)
         const modelPricing = {
-            'anthropic/claude-sonnet-4': { input: 3, output: 15 },
-            'openai/gpt-4.1': { input: 2, output: 8 },
-            'anthropic/claude-opus-4': { input: 15, output: 75 },
-            'qwen/qwen3-235b-a22b': { input: 0.5, output: 0.5 }
+            'openai/gpt-5.1': { input: 2.5, output: 10 },
+            'anthropic/claude-sonnet-4.5': { input: 3, output: 15 },
+            'anthropic/claude-opus-4.5': { input: 15, output: 75 },
+            'qwen/qwen3.5-35b-a3b': { input: 0.8, output: 0.8 }
         };
-
-        // ===== MOBILE MEMORY MODAL =====
-        function openMemoryModal() {
-            document.getElementById('memoryModal').classList.add('show');
-            renderMemoriesMobile();
-        }
-
-        function closeMemoryModal() {
-            document.getElementById('memoryModal').classList.remove('show');
-        }
-
-        function renderMemoriesMobile() {
-            const container = document.getElementById('memoriesListMobile');
-            container.innerHTML = '';
-
-            memories.forEach(memory => {
-                const item = document.createElement('div');
-                item.className = 'memory-item priority-' + memory.priority;
-
-                const textarea = document.createElement('textarea');
-                textarea.id = 'memory-text-mobile-' + memory.id;
-                textarea.value = memory.text;
-                textarea.placeholder = 'Memory content...';
-
-                const keywordsInput = document.createElement('input');
-                keywordsInput.id = 'memory-keywords-mobile-' + memory.id;
-                keywordsInput.value = memory.keywords || '';
-                keywordsInput.placeholder = 'Keywords: Rose, Orion, video games';
-
-                const prioritySelect = document.createElement('select');
-                prioritySelect.id = 'memory-priority-mobile-' + memory.id;
-                prioritySelect.innerHTML = `
-                    <option value="high" ${memory.priority === 'high' ? 'selected' : ''}>🔴 High Priority</option>
-                    <option value="medium" ${memory.priority === 'medium' ? 'selected' : ''}>🟡 Medium Priority</option>
-                    <option value="low" ${memory.priority === 'low' ? 'selected' : ''}>🟢 Low Priority</option>
-                `;
-
-                const actions = document.createElement('div');
-                actions.className = 'memory-actions';
-
-                const saveBtn = document.createElement('button');
-                saveBtn.className = 'memory-btn save-memory-btn';
-                saveBtn.type = 'button';
-                saveBtn.textContent = '💾 Save';
-                saveBtn.onclick = () => saveMemoryMobile(memory.id);
-
-                const deleteBtn = document.createElement('button');
-                deleteBtn.className = 'memory-btn delete-memory-btn';
-                deleteBtn.type = 'button';
-                deleteBtn.textContent = '🗑️ Delete';
-                deleteBtn.onclick = () => deleteMemory(memory.id);
-
-                actions.appendChild(saveBtn);
-                actions.appendChild(deleteBtn);
-
-                item.appendChild(textarea);
-                item.appendChild(keywordsInput);
-                item.appendChild(prioritySelect);
-                item.appendChild(actions);
-                container.appendChild(item);
-            });
-        }
-
-        function saveMemoryMobile(id) {
-            const memory = memories.find(m => m.id === id);
-            if (memory) {
-                memory.text = document.getElementById('memory-text-mobile-' + id).value;
-                memory.keywords = document.getElementById('memory-keywords-mobile-' + id).value;
-                memory.priority = document.getElementById('memory-priority-mobile-' + id).value;
-                saveMemoriesToSupabase();
-                renderMemories();
-                renderMemoriesMobile();
-                alert('Memory saved to cloud!');
-            }
-        }
 
         // ===== SUPABASE FUNCTIONS =====
         async function loadFromSupabase() {
@@ -1411,13 +1162,6 @@
                             settingsData.cost_tracking.year === now.getFullYear()) {
                             costTracking = settingsData.cost_tracking;
                         }
-                    }
-                    // Load API keys from Supabase
-                    if (settingsData.api_key) {
-                        document.getElementById('apiKey').value = settingsData.api_key;
-                    }
-                    if (settingsData.search_api_key) {
-                        document.getElementById('searchApiKey').value = settingsData.search_api_key;
                     }
                 }
 
@@ -1518,9 +1262,7 @@
                         memory_enabled: memoryEnabled,
                         dark_mode: darkMode,
                         search_enabled: searchEnabled,
-                        cost_tracking: costTracking,
-                        api_key: document.getElementById('apiKey').value || null,
-                        search_api_key: document.getElementById('searchApiKey').value || null
+                        cost_tracking: costTracking
                     })
                     .eq('id', 1);
 
@@ -1575,7 +1317,7 @@
                         'X-Title': 'My AI Chat App'
                     },
                     body: JSON.stringify({
-                        model: 'anthropic/claude-sonnet-4',
+                        model: 'anthropic/claude-sonnet-4.5',
                         messages: [{
                             role: 'user',
                             content: `Analyze this conversation and extract 5-10 important memories about the user. For each memory, provide:
@@ -1648,6 +1390,7 @@ ${conversationText}`
             isInitializing = true;
             
             await loadFromSupabase();
+            loadSettings();
             renderMemories();
             updateMemoryToggleUI();
             updateSearchToggleUI();
@@ -1667,14 +1410,28 @@ ${conversationText}`
             console.log('Initialization complete');
         };
 
+        function loadSettings() {
+            const savedApiKey = localStorage.getItem('openrouter_api_key');
+            if (savedApiKey) {
+                document.getElementById('apiKey').value = savedApiKey;
+            }
+
+            const savedSearchKey = localStorage.getItem('search_api_key');
+            if (savedSearchKey) {
+                document.getElementById('searchApiKey').value = savedSearchKey;
+            }
+        }
+
         function saveSettings() {
             const apiKey = document.getElementById('apiKey').value;
             if (apiKey) {
+                localStorage.setItem('openrouter_api_key', apiKey);
                 showSavedIndicator('apiKeySaved');
             }
 
             const searchKey = document.getElementById('searchApiKey').value;
             if (searchKey) {
+                localStorage.setItem('search_api_key', searchKey);
                 showSavedIndicator('searchKeySaved');
             }
 
@@ -1880,13 +1637,10 @@ ${conversationText}`
 
         function updateMemoryToggleUI() {
             const toggle = document.getElementById('memoryToggle');
-            const toggleMobile = document.getElementById('memoryToggleMobile');
             if (memoryEnabled) {
                 toggle.classList.add('active');
-                if (toggleMobile) toggleMobile.classList.add('active');
             } else {
                 toggle.classList.remove('active');
-                if (toggleMobile) toggleMobile.classList.remove('active');
             }
         }
 
@@ -1900,7 +1654,6 @@ ${conversationText}`
             });
             saveMemoriesToSupabase();
             renderMemories();
-            renderMemoriesMobile();
         }
 
         function saveMemory(id) {
@@ -1920,7 +1673,6 @@ ${conversationText}`
                 memories = memories.filter(m => m.id !== id);
                 saveMemoriesToSupabase();
                 renderMemories();
-                renderMemoriesMobile();
             }
         }
 
