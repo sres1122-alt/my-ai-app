@@ -1396,6 +1396,19 @@ ${conversationText}`
 if (!response || !response.ok) {
     throw new Error('All models failed: ' + (lastError?.message || 'Unknown error'));
 }
+
+                const data = await response.json();
+                let extractedMemories = [];
+
+                try {
+                    const responseText = data.choices[0].message.content.trim();
+                    const jsonText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+                    extractedMemories = JSON.parse(jsonText);
+                } catch (parseError) {
+                    console.error('Failed to parse AI response:', parseError);
+                    throw new Error('AI returned invalid format');
+                }
+
                 let addedCount = 0;
                 extractedMemories.forEach(mem => {
                     if (mem.text && mem.text.trim()) {
