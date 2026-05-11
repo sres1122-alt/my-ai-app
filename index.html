@@ -1025,6 +1025,7 @@
             </div>
 
             <button class="add-memory-btn" onclick="addNewMemory()">➕ Add Memory</button>
+            <button class="add-memory-btn" style="background: #ffc107;" onclick="showMemoryReview()">🔍 Monthly Review</button>
             <div class="memories-list" id="memoriesList"></div>
         </div>
     </div>
@@ -1034,7 +1035,15 @@
         <h4>🧠 Extracting Memories...</h4>
         <p id="extractingText">Analyzing conversation...</p>
     </div>
-
+<!-- Memory Review Modal -->
+    <div class="modal" id="memoryReviewModal">
+        <div class="modal-content" style="max-width: 600px;">
+            <h3>🔍 Monthly Memory Review</h3>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Review memories that haven't been used in 30+ days</p>
+            <div id="reviewMemoriesList" style="max-height: 400px; overflow-y: auto;"></div>
+            <button class="modal-close" onclick="closeMemoryReview()">Close</button>
+        </div>
+    </div>
     <!-- Export Modal -->
     <div class="modal" id="exportModal">
         <div class="modal-content">
@@ -1710,7 +1719,84 @@ if (!response || !response.ok) {
                 toggle.classList.remove('active');
             }
         }
+function showMemoryReview() {
+            const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+            const unusedMemories = memories.filter(m => {
+                if (m.archived) return false; // Don't show archived ones
+                const lastUsed = m.lastUsed || 0;
+                return lastUsed === 0 || lastUsed < thirtyDaysAgo;
+            });
 
+            const reviewList = document.getElementById('reviewMemoriesList');
+            
+            if (unusedMemories.length === 0) {
+                reviewList.innerHTML = '<p style="text-align: center; padding: 20px; color: var(--text-muted);">✅ All memories have been used recently!</p>';
+            } else {
+                reviewList.innerHTML = '';
+                unusedMemories.forEach(memory => {
+                    const item = document.createElement('div');
+                    item.style.cssText = 'background: var(--bg-secondary); padding: 15px; border-radius: 8px; margin-bottom: 10px;';
+                    
+                    const text = document.createElement('p');
+                    text.textContent = memory.text;
+                    text.style.marginBottom = '10px';
+                    
+                    const meta = document.createElement('div');
+                    meta.style.cssText = 'font-size: 12px; color: var(--text-muted); margin-bottom: 10px;';
+                    const daysSince = memory.lastUsed ? Math.floor((Date.now() - memory.lastUsed) / (24 * 60 * 60 * 1000)) : 'Never';
+                    meta.textContent = `Keywords: ${memory.keywords || 'none'} | Last used: ${daysSince} days ago`;
+                    
+                    const actions = document.createElement('div');
+                    actions.style.display = 'flex';
+                    actions.style.gap = '8px';
+                    
+                    const keepBtn = document.createElement('button');
+                    keepBtn.textContent = '✓ Keep';
+                    keepBtn.style.cssText = 'background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;';
+                    keepBtn.onclick = () => keepMemory(memory.id);
+                    
+                    const archiveBtn = document.createElement('button');
+                    archiveBtn.textContent = '📦 Archive';
+                    archiveBtn.style.cssText = 'background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600;';
+                    archiveBtn.onclick = () => archiveMemory(memory.id);
+                    
+                    actions.appendChild(keepBtn);
+                    actions.appendChild(archiveBtn);
+                    
+                    item.appendChild(text);
+                    item.appendChild(meta);
+                    item.appendChild(actions);
+                    reviewList.appendChild(item);
+                });
+            }
+            
+            document.getElementById('memoryReviewModal').classList.add('show');
+        }
+
+        function closeMemoryReview() {
+            document.getElementById('memoryReviewModal').classList.remove('show');
+        }
+
+        function keepMemory(id) {
+            const memory = memories.find(m => m.id === id);
+            if (memory) {
+                memory.lastUsed = Date.now(); // Mark as used now
+                saveMemoriesToSupabase();
+                showMemoryReview(); // Refresh the list
+            }
+        }
+
+        function archiveMemory(id) {
+            if (confirm('Archive this memory? It will be hidden but not deleted.')) {
+                const memory = memories.find(m => m.id === id);
+                if (memory) {
+                    memory.archived = true;
+                    saveMemoriesToSupabase();
+                    showMemoryReview(); // Refresh the list
+                    alert('Memory archived! You can unarchive it later if needed.');
+                }
+            }
+        }
         function addNewMemory() {
             const id = 'mem_' + Date.now();
             memories.push({
@@ -1823,13 +1909,14 @@ if (!response || !response.ok) {
             });
         }
 
-        function getRelevantMemories(messageText) {
+      function getRelevantMemories(messageText) {
             if (!memoryEnabled || memories.length === 0) return [];
 
             const messageLower = messageText.toLowerCase();
             const scoredMemories = [];
 
             memories.forEach(memory => {
+                if (memory.archived) return; // Skip archived memories
                 if (!memory.text.trim()) return;
 
                 let score = 0;
@@ -1851,7 +1938,14 @@ if (!response || !response.ok) {
             });
 
             scoredMemories.sort((a, b) => b.score - a.score);
-            return scoredMemories.slice(0, maxMemoriesPerMessage).map(sm => sm.memory);
+            
+            // Update lastUsed timestamp for retrieved memories
+            const selectedMemories = scoredMemories.slice(0, maxMemoriesPerMessage);
+            selectedMemories.forEach(sm => {
+                sm.memory.lastUsed = Date.now();
+            });
+            
+            return selectedMemories.map(sm => sm.memory);
         }
 
         function createNewConversation() {
