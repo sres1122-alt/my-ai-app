@@ -1400,13 +1400,32 @@ if (!response || !response.ok) {
                 const data = await response.json();
                 let extractedMemories = [];
 
-                try {
+              try {
                     const responseText = data.choices[0].message.content.trim();
-                    const jsonText = responseText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
-                    extractedMemories = JSON.parse(jsonText);
+                    console.log('AI Response:', responseText); // Debug: see what we got
+                    
+                    // Try to extract JSON even if there's extra text
+                    let jsonText = responseText;
+                    
+                    // Remove markdown code blocks
+                    jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+                    
+                    // Try to find JSON array in the text
+                    const jsonMatch = jsonText.match(/\[\s*\{[\s\S]*\}\s*\]/);
+                    if (jsonMatch) {
+                        jsonText = jsonMatch[0];
+                    }
+                    
+                    extractedMemories = JSON.parse(jsonText.trim());
+                    
+                    // Make sure it's an array
+                    if (!Array.isArray(extractedMemories)) {
+                        extractedMemories = [];
+                    }
                 } catch (parseError) {
                     console.error('Failed to parse AI response:', parseError);
-                    throw new Error('AI returned invalid format');
+                    console.error('Raw response was:', data.choices[0].message.content);
+                    throw new Error('AI returned invalid format. Check browser console (F12) to see what it said.');
                 }
 
                 let addedCount = 0;
