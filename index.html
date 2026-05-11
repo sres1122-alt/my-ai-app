@@ -592,7 +592,13 @@
             word-wrap: break-word;
             white-space: pre-wrap;
         }
-
+.message-bubble em {
+            font-style: italic;
+        }
+        
+        .message-bubble strong {
+            font-weight: bold;
+        }
         .message.user .message-bubble {
             background: var(--user-bubble);
             color: white;
@@ -2363,7 +2369,10 @@ function showMemoryReview() {
             
             const bubbleDiv = document.createElement('div');
             bubbleDiv.className = 'message-bubble';
-            bubbleDiv.textContent = text;
+            bubblebubbleDiv.innerHTML = text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');Div.textContent = text;
             
             messageDiv.appendChild(bubbleDiv);
 
